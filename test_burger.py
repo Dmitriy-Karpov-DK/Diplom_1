@@ -1,0 +1,51 @@
+import pytest
+
+from praktikum.burger import Burger
+from praktikum.bun import Bun
+from praktikum.ingredient import Ingredient
+
+
+class TestBurger:
+
+    def test_burger_set_buns_successful(self, bun_fix):
+
+        burger1 = Burger()
+        burger1.set_buns(bun_fix)
+        assert str(vars(burger1.bun)) == str(vars(bun_fix))
+
+    def test_burger_add_ingredient_successful(self, ingredient_fix):
+
+        burger1 = Burger()
+        burger1.add_ingredient(ingredient_fix)
+        assert str(vars(burger1.ingredients[-1])) == str(vars(ingredient_fix))
+
+    def test_burger_remove_ingredient_successful(self, ingredient_fix):
+
+        burger1 = Burger()
+        burger1.add_ingredient(ingredient_fix)  # тут нужен мок
+        burger1.remove_ingredient(-1)
+        assert len(burger1.ingredients) == 0
+
+    def test_burger_move_ingredient_successful(self, ingredient_fix, ingredient_filling_fix):
+
+        burger1 = Burger()
+        burger1.add_ingredient(ingredient_fix)
+        burger1.add_ingredient(ingredient_filling_fix)
+        burger1.move_ingredient(0, 1)
+        assert burger1.ingredients[-1] == ingredient_fix
+
+    @pytest.mark.parametrize('bun_data, ingredients_data, price',
+                             [
+                                 (['black bun', 100], ['SAUCE', 'sour cream', 200], 400),
+                                 (['white bun', 200], ['FILLING', 'sausage', 300], 700),
+                                 (['red bun', 300], ['FILLING', 'dinosaur', 200], 800)
+                             ]
+                             )
+    def test_burger_get_price_successful(self, bun_data, ingredients_data, price):
+        bun1 = Bun(*bun_data)
+        ingredient1 = Ingredient(*ingredients_data)
+        burger1 = Burger()
+        burger1.set_buns(bun1)
+        burger1.add_ingredient(ingredient1)
+        burger1.get_price()
+        assert burger1.get_price() == price
