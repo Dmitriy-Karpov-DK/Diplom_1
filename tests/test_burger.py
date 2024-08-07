@@ -1,5 +1,5 @@
 import pytest
-
+from unittest.mock import Mock
 from praktikum.burger import Burger
 from praktikum.bun import Bun
 from praktikum.ingredient import Ingredient
@@ -49,3 +49,14 @@ class TestBurger:
         burger1.add_ingredient(ingredient1)
         burger1.get_price()
         assert burger1.get_price() == price
+
+    def test_burger_get_receipt_successful(self):
+        bun1 = Bun('black bun', 100)
+        ingredient1 = Ingredient('FILLING', 'sausage', 300)
+        ingredient2 = Ingredient('SAUCE', 'sour cream', 200)
+        burger1 = Burger()
+        burger1.set_buns(bun1)
+        burger1.add_ingredient(ingredient1)
+        burger1.add_ingredient(ingredient2)
+        check = f"(==== black bun ====)\n= filling sausage =\n= sauce sour cream =\n(==== black bun ====)\n\nPrice: 700"
+        assert burger1.get_receipt() == check
