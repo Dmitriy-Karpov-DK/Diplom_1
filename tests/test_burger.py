@@ -1,8 +1,10 @@
 import pytest
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 from praktikum.burger import Burger
 from praktikum.bun import Bun
 from praktikum.ingredient import Ingredient
+from constsnts import Constants
+from conftest import ingredient_fix, ingredient_filling_fix
 
 
 class TestBurger:
@@ -21,8 +23,10 @@ class TestBurger:
 
     def test_burger_remove_ingredient_successful(self, ingredient_fix):
 
+        mock_add_ingredient = Mock()
+        mock_add_ingredient.return_value = ingredient_fix
         burger1 = Burger()
-        burger1.add_ingredient(ingredient_fix)  # тут нужен мок
+        burger1.add_ingredient(mock_add_ingredient.return_value)
         burger1.remove_ingredient(-1)
         assert len(burger1.ingredients) == 0
 
@@ -42,15 +46,16 @@ class TestBurger:
                              ]
                              )
     def test_burger_get_price_successful(self, bun_data, ingredients_data, price):
+
         bun1 = Bun(*bun_data)
         ingredient1 = Ingredient(*ingredients_data)
         burger1 = Burger()
         burger1.set_buns(bun1)
         burger1.add_ingredient(ingredient1)
-        burger1.get_price()
         assert burger1.get_price() == price
 
     def test_burger_get_receipt_successful(self):
+
         bun1 = Bun('black bun', 100)
         ingredient1 = Ingredient('FILLING', 'sausage', 300)
         ingredient2 = Ingredient('SAUCE', 'sour cream', 200)
